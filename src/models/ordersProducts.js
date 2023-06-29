@@ -11,8 +11,9 @@ const OrdersProducts = sequelize.define(
       primaryKey: true,
       autoIncrement: true
     },
-    price_products: {
+    priceProducts: {
       type: DataTypes.NUMERIC,
+      field: "price_products",
       allowNull: false
     },
     quantity :{

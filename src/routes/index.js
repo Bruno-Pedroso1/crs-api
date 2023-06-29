@@ -8,10 +8,10 @@ import productsRoute from './productsRoute'
 import userRoutes from './userRoutes'
 
 export default function Routes (app) {
+    ordersProductsRoute(app);
     adressesRoute(app);
     categoriesRoute(app);
     cupomsRoute(app);
-    ordersProductsRoute(app);
     ordersRoute(app);
     paymentsRoute(app);
     productsRoute(app);

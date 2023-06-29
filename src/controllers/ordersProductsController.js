@@ -42,7 +42,6 @@ const get = async (req, res) => {
 const persist = async (req, res) => {
   try {
     let id = req.params.id ? req.params.id.toString().replace(/\D/g, '') : null;
-    
     if (!id) {
       return await create(req.body, res)
     }
@@ -58,11 +57,11 @@ const persist = async (req, res) => {
 }
 
 const create = async (dados, res) => {
-  let { id, price_products, quantity, idOrder, idProduct } = dados;
+  let { id, priceProducts, quantity, idOrder, idProduct } = dados;
 
   let response = await OrdersProducts.create({
     id,
-    price_products,
+    priceProducts,
     quantity,
     idOrder,
     idProduct
