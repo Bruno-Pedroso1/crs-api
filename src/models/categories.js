@@ -22,4 +22,5 @@ const Categories = sequelize.define(
   }
 );
 
+
 export default Categories;
