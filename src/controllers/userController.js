@@ -58,7 +58,7 @@ const persist = async (req, res) => {
 }
 
 const create = async (dados, res) => {
-  let { id, username, cpf, name, phone, email } = dados;
+  let { id, username, cpf, name, phone, email, role } = dados;
 
   let response = await User.create({
     id,
@@ -66,7 +66,8 @@ const create = async (dados, res) => {
     cpf,
     name,
     phone,
-    email
+    email,
+    role
   });
 
   return res.status(200).send({
