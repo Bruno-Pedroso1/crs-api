@@ -1,6 +1,6 @@
 import { text } from 'express';
 import nodemailer from 'nodemailer'
-import Users from '../models/user';
+import Users from '../models/UserModel';
 import crypto from 'crypto'
 import bcrypt from 'bcryptjs'
 import jwt from "jsonwebtoken";

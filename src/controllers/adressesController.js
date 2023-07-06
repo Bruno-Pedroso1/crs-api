@@ -1,4 +1,4 @@
-import Adresses from "../models/Adresses";
+import Adresses from "../models/AdressesModel";
 import Jwt from "jsonwebtoken";
 import Util from "../utils/getUserByToken"
 

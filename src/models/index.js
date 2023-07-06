@@ -1,11 +1,11 @@
-import Users from './User'
-import Payments from './Payments';
-import Categories from './Categories';
-import Cupoms from './Cupoms';
-import Products from './Products';
-import Adresses from './Adresses';
-import Orders from './Orders';
-import OrdersProducts from './OrdersProducts';
+import Users from './UserModel'
+import Payments from './PaymentsModel';
+import Categories from './CategoriesModel';
+import Cupoms from './CupomsModel';
+import Products from './ProductsModel';
+import Adresses from './AdressesModel';
+import Orders from './OrdersModel';
+import OrdersProducts from './OrdersProductsModel';
 
 (async () => {
   // await Users.sync({ force: true });

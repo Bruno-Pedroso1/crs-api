@@ -1,5 +1,5 @@
-import Categories from "../models/Categories"
-import Products from "../models/Products"
+import Categories from "../models/CategoriesModel"
+import Products from "../models/ProductsModel"
 
 
 const getAll = async (req, res) => {

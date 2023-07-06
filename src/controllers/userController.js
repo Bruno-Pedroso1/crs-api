@@ -1,4 +1,8 @@
-import User from "../models/User";
+import User from "../models/UserModel";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import getUserByToken from "../utils/getUserByToken";
+
 
 const get = async (req, res) => {
   try {
