@@ -1,9 +1,9 @@
 import { sequelize } from "../config";
 import { DataTypes } from "sequelize";
-import Users from "./user";
-import Adresses from "./adresses";
-import Payments from "./payments";
-import Cupoms from "./cupoms";
+import Users from "./User";
+import Adresses from "./Adresses";
+import Payments from "./Payments";
+import Cupoms from "./Cupoms";
 
 const Orders = sequelize.define(
   'orders',

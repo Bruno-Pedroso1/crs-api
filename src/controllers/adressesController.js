@@ -1,8 +1,10 @@
-import Adresses from "../models/adresses";
+import Adresses from "../models/Adresses";
+import Jwt from "jsonwebtoken";
+import Util from "../utils/getUserByToken"
 
 const get = async (req, res) => {
   try {
-    let id = req.params.id ? req.params.id.toString().replace(/\D/g, '') : null;
+    let user = await Util.getUserByToken
 
     if (!id) {
       let response = await Adresses.findAll({
