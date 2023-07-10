@@ -12,4 +12,5 @@ export default (app) => {
   app.delete('/users/delete/:id', userController.delet)
   app.post('/users/:id', userController.persist)
   app.get('/user/:id',  userController.dualGet)
+	app.post('/users/verify-token', verifytoken)
 }

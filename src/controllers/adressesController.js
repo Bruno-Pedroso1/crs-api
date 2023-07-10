@@ -2,45 +2,29 @@ import Adresses from "../models/AdressesModel";
 import Jwt from "jsonwebtoken";
 import Util from "../utils/getUserByToken"
 
-const get = async (req, res) => {
+const getAll = async (req, res) => {
   try {
-    let user = await Util.getUserByToken
+    let user = await Util.getUserByToken(req.headers.authorization)
 
-    if (!id) {
-      let response = await Adresses.findAll({
-        order: [['id', 'asc']]
-      });
-      return res.status(200).send({
-        type: 'success',
-        message: 'Registros carregados com sucesso',
-        data: response 
-      });
-    };
-
-    let response = await Adresses.findOne({ where: { id } });
-
-    if (!response) {
-      return res.status(200).send({
-        type: 'error',
-        message: `Nenhum registro com id ${id}`,
-        data: [] 
-      });
-    }
+    const response = await Adresses.findAll({
+      where: {
+        idUser: user.id
+      }
+    })
 
     return res.status(200).send({
-      type: 'success',
-      message: 'Registro carregado com sucesso',
-      data: response 
+      type: 'success', // success, error, warning, info
+      message: 'Registros recuperados com sucesso', // mensagem para o front exibir
+      data: response // json com informações de resposta
     });
   } catch (error) {
     return res.status(200).send({
       type: 'error',
-      message: `Ops! Ocorreu um erro`,
-      error: error.message 
+      message: 'Ops! Ocorreu um erro!',
+      data: error.message 
     });
   }
 }
-
 const persist = async (req, res) => {
   try {
     let id = req.params.id ? req.params.id.toString().replace(/\D/g, '') : null;
@@ -138,7 +122,7 @@ const destroy = async (req, res) => {
 }
 
 export default {
-  get,
+  getAll,
   persist,
   destroy
 }
