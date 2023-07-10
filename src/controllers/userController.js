@@ -1,149 +1,284 @@
-import User from "../models/UserModel";
+import Users from "../models/UserModel";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import getUserByToken from "../utils/getUserByToken";
 
+const dualGet = async (req,res) =>{ 
+  try{
+    let { id } = req.params
 
-const get = async (req, res) => {
-  try {
-    let id = req.params.id ? req.params.id.toString().replace(/\D/g, '') : null;
+    id = id ? id.toString().replace(/\D/g, '') :null
 
-    if (!id) {
-      let response = await User.findAll({
-        order: [['id', 'asc']]
-      });
-      return res.status(200).send({
-        type: 'success',
-        message: 'Registros carregados com sucesso',
-        data: response 
-      });
-    };
-
-    let response = await User.findOne({ where: { id } });
-
-    if (!response) {
-      return res.status(200).send({
-        type: 'error',
-        message: `Nenhum registro com id ${id}`,
-        data: [] 
-      });
+    if(!id){
+      return await getAll(req, res)
+    }else{
+      return await getById(id, req, res)
     }
-
+  }catch(error){
     return res.status(200).send({
-      type: 'success',
-      message: 'Registro carregado com sucesso',
-      data: response 
+      type: 'error',
+      message: 'Ops! Ocorreu um erro!',
+      data: error
+    });
+  }
+}
+
+const getByToken = async (req, res) => {
+  try{
+    let userForget = await getUserByToken.getUserByToken(req.headers.authorization)
+    let idUser = userForget.id 
+    return await getById(idUser, req, res)
+  }catch(err){
+    return res.status(200).send({
+      type: 'error',
+      message: 'Ops! Ocorreu um erro!',
+      data: err.message
+    });
+  }
+}
+
+
+
+
+const getAll = async (req, res) => {
+  try {
+    const response = await Users.findAll({
+      order: [['id', 'ASC']]
+    });
+    return res.status(200).send({
+      type: 'sucess', // sucess, error, warning, info
+      message: 'Registros recuperados com sucesso', // mensagem para o front exibir
+      data: response // json com informações de resposta
     });
   } catch (error) {
     return res.status(200).send({
       type: 'error',
-      message: `Ops! Ocorreu um erro`,
-      error: error.message 
+      message: 'Ops! Ocorreu um erro!',
+      data: error
+    });
+  }
+}
+
+
+const getById = async (id, req, res) =>{
+  try {
+    let response = await Users.findOne({
+      where:{
+        id
+      }
+    })
+
+    if (!response) {
+      return res.status(200).send({
+        type: 'warning',
+        message: 'Não foi encontrado usuario com este ID',
+      });
+    }
+    
+    return res.status(200).send({
+      type: 'sucess',
+      message: 'Usuario encontrado',
+      data: response
+    });
+
+  } catch (error) {
+    return res.status(200).send({
+      type: 'error',
+      message: 'Ops! Ocorreu um erro!',
+      data: error
     });
   }
 }
 
 const persist = async (req, res) => {
   try {
-    let id = req.params.id ? req.params.id.toString().replace(/\D/g, '') : null;
-    
+    let { id } = req.params;
     if (!id) {
-      return await create(req.body, res)
+      return await register(req.body, res)
     }
-
     return await update(id, req.body, res)
+
   } catch (error) {
     return res.status(200).send({
       type: 'error',
-      message: `Ops! Ocorreu um erro`,
-      error: error
+      message: 'Ops! Ocorreu um erro!',
+      data: error.message
     });
   }
 }
 
-const create = async (dados, res) => {
-  let { id, username, cpf, name, phone, email, role, passwordHash, token, cart, recuperation } = dados;
-
-  let response = await User.create({
-    id,
-    username,
-    cpf,
-    name,
-    phone,
-    email,
-    role,
-    passwordHash,
-    token,
-    cart,
-    recuperation
-  });
-
-  return res.status(200).send({
-    type: 'success',
-    message: `Cadastro realizado com sucesso`,
-    data: response 
-  });
-}
-
-const update = async (id, dados, res) => {
-  let response = await User.findOne({ where: { id } });
-
-  if (!response) {
-    return res.status(200).send({
-      type: 'error',
-      message: `Nenhum registro com id ${id} para atualizar`,
-      data: [] 
-    });
-  }
-
-  Object.keys(dados).forEach(field => response[field] = dados[field]);
-
-  await response.save();
-  return res.status(200).send({
-    type: 'success',
-    message: `Registro id ${id} atualizado com sucesso`,
-    data: response
-  });
-}
-
-const destroy = async (req, res) => {
+const register = async (data, res) => {
   try {
-    let id = req.params.id ? req.params.id.toString().replace(/\D/g, '') : null;
-    if (!id) {
+    let { username, name, phone, password, role, cpf,email } = data;
+
+    let userExists = await Users.findOne({
+      where: {
+        username
+      }
+    });
+
+    if (userExists) {
       return res.status(200).send({
         type: 'error',
-        message: `Informe um id para deletar o registro`,
-        data: [] 
+        message: 'Já existe um usuário cadastrado com esse username!'
       });
     }
 
-    let response = await User.findOne({ where: { id } });
+    let passwordHash = await bcrypt.hash(password, 10);
 
+    let response = await Users.create({
+      username,
+      name,
+      phone,
+      passwordHash,
+      role,
+      cpf,
+      email
+    });
+
+    return res.status(200).send({
+      type: 'sucess',
+      message: 'Usuário cadastrastado com sucesso!',
+      data: response
+    });
+  } catch (error) {
+    return res.status(200).send({
+      type: 'error',
+      message: 'Ops! Ocorreu um erro!',
+      data: error.message
+    });
+  }
+}
+
+const update = async (id, data, res) => {
+  try {
+    let response = await Users.findOne({
+      where: {
+        id
+      }
+    })
+    // console.log(response);
     if (!response) {
       return res.status(200).send({
         type: 'error',
-        message: `Nenhum registro com id ${id} para deletar`,
-        data: [] 
+        message: `Não foi encontrado categorias com o id ${id}`
       });
     }
+    console.log(Object.keys(data));
+    console.log(data);
+    let usernameForget = false;
+    Object.keys(data).forEach(datas => {
+      response[datas] = data[datas]
+      if (datas == "username") {
+        usernameForget = true
+      }
+    })
+    
+    // console.log(response);
+    await response.save()
 
-    await response.destroy();
     return res.status(200).send({
-      type: 'success',
-      message: `Registro id ${id} deletado com sucesso`,
-      data: [] 
+      type: 'sucess', // sucess, error, warning, info
+      message: 'Registros atualizados com sucesso, logue novamente!', // mensagem para o front exibir
+      usernameForget,
+      data: response // json com informações de resposta
     });
   } catch (error) {
     return res.status(200).send({
       type: 'error',
-      message: `Ops! Ocorreu um erro`,
-      error: error.message 
+      message: 'Ops! Ocorreu um erro!',
+      data: error,
     });
   }
 }
 
+const login = async (req, res) => {
+  try {
+    let { username, password } = req.body;
+
+    let user = await Users.findOne({
+      where: {
+        username
+      }
+    });
+
+    if (!user || !(await bcrypt.compare(password, user.passwordHash))) {
+      return res.status(200).send({
+        type: 'error',
+        message: 'Usuário ou senha incorretos!'
+      });
+    }
+
+    let token = jwt.sign(
+      { userId: user.id, username: user.username, role: user.role }, //payload - dados utilizados na criacao do token
+      process.env.TOKEN_KEY, //chave PRIVADA da aplicação 
+      { expiresIn: '1h' } //options ... em quanto tempo ele expira...
+    );
+
+    user.token = token;
+    await user.save();
+
+    return res.status(200).send({
+      type: 'sucess',
+      message: 'Bem-vindo! Login realizado com sucesso!',
+      data: user,
+      token
+    });
+  } catch (error) {
+    return res.status(200).send({
+      type: 'error',
+      message: 'Ops! Ocorreu um erro!',
+      data: error
+    });
+  }
+}
+
+const delet = async (req, res) => {
+  try {
+    let { id } = req.body
+    id = id.toString()
+    id = id ? id.replace(/\D/g, '') : null
+    if (!id) {
+      return res.status(200).send({
+        type: 'warning',
+        message: 'Informe um id válido para deletar o usuário',
+      });
+    }
+
+    let response = await Users.findOne({
+      where: {
+        id: id
+      }
+    })
+
+    if (!response) {
+      return res.status(200).send({
+        type: 'warning',
+        message: `Não foi encontrado um usuário com o id ${id}`,
+      });
+    }
+
+
+    await response.destroy()
+    return res.status(200).send({
+      type: 'sucess',
+      message: `registro com o id ${id} deletado com sucesso`,
+    });
+
+  } catch (error) {
+    return res.status(200).send({
+      type: 'error',
+      message: 'Ops! Ocorreu um erro!',
+      data: error
+    });
+  }
+}
+
+
 export default {
-  get,
+  dualGet,
   persist,
-  destroy,
+  login,
+  delet,
+  getByToken,
 }

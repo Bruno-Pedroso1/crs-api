@@ -37,7 +37,7 @@ const Users = sequelize.define(
         },
         role: {
             type: DataTypes.STRING(255),
-            allowNull:true
+            allowNull:false
         },
         cart: {
             type: DataTypes.JSONB,

@@ -4,8 +4,8 @@ import adminValidator from "../utils/adminValidator"
 
 export default (app) => {
 	app.post('/orders', Authenticate, ordersController.persist)
-	app.patch('/orders/:id', Authenticate, ordersController.persist)
-	app.delete('/orders/destroy/:id', ordersController.destroy)
-	app.get('/orders', Authenticate, adminValidator, ordersController.get)
+	app.patch('/orders/:id', ordersController.persist)
+	app.delete('/orders/destroy/:id', Authenticate, ordersController.destroy)
+	app.get('/orders',ordersController.get)
 	app.get('/orders/:id', Authenticate, adminValidator, ordersController.get)
 }
