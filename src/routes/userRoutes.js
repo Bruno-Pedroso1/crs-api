@@ -9,8 +9,9 @@ export default (app) => {
   app.get('/users/by-token', userController.getByToken)
   app.get('/user/:id',  userController.dualGet)
   app.post('/users/', userController.persist)
-  app.post('/users/login', userController.login),
+  app.post('/users/login', userController.login)
 	app.post('/users/verify-token', verifytoken)
   app.patch('/users/:id', userController.persist)
 	app.delete('/users/delete/:id', userController.delet)
+  app.get('/user/validate', userController.validate)
 }

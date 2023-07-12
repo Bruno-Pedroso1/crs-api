@@ -28,11 +28,11 @@ const getByToken = async (req, res) => {
     let userForget = await getUserByToken.getUserByToken(req.headers.authorization)
     let idUser = userForget.id 
     return await getById(idUser, req, res)
-  }catch(err){
+  }catch(error){
     return res.status(200).send({
       type: 'error',
       message: 'Ops! Ocorreu um erro!',
-      data: err.message
+      data: error.message
     });
   }
 }
@@ -87,6 +87,23 @@ const getById = async (id, req, res) =>{
       message: 'Ops! Ocorreu um erro!',
       data: error
     });
+  }
+}
+
+const validate = async (req, res) => {
+  try {
+    let token = req.headers.authorization;
+    if (token) {
+      token = token.split(' ')[1]
+      let funcao = jwt.verify(token, process.env.TOKEN_KEY);
+      return res.status(200).send({role: funcao.role});
+    }
+  } catch (error) {
+    res.status(400).send({
+      type: 'error',
+      message: 'Ops! Ocorreu um erro',
+      data: error.message
+    })
   }
 }
 
@@ -279,5 +296,6 @@ export default {
   login,
   delet,
   getByToken,
-  getAll
+  getAll,
+  validate
 }
