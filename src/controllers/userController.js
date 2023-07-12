@@ -164,8 +164,6 @@ const update = async (id, data, res) => {
         message: `Não foi encontrado categorias com o id ${id}`
       });
     }
-    console.log(Object.keys(data));
-    console.log(data);
     let usernameForget = false;
     Object.keys(data).forEach(datas => {
       response[datas] = data[datas]
@@ -235,7 +233,7 @@ const login = async (req, res) => {
 
 const delet = async (req, res) => {
   try {
-    let { id } = req.body
+    let { id } = req.params
     id = id.toString()
     id = id ? id.replace(/\D/g, '') : null
     if (!id) {
@@ -281,4 +279,5 @@ export default {
   login,
   delet,
   getByToken,
+  getAll
 }

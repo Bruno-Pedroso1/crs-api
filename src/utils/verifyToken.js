@@ -7,7 +7,6 @@ export default async (req, res, next) => {
     if(!authorization){
       authorization = req.headers.authorization;
     }
-    console.log(authorization);
 
     if (!authorization || authorization == "Bearer") {
       return res.status(200).send({
@@ -50,7 +49,7 @@ export default async (req, res, next) => {
     if(user.role == "deliver"){
       return res.status(200).send({
         type: 'unauthorized',
-        message: 'User sem permissão',
+        message: 'Usuário sem permissão',
         role: "deliver",
         name: user.username
       })
@@ -59,7 +58,7 @@ export default async (req, res, next) => {
     if(user.role !== 'admin') {
       return res.status(200).send({
         type: 'unauthorized',
-        message: 'User sem permissão',
+        message: 'Usuário sem permissão',
         name: user.username
       })
     }

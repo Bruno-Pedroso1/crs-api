@@ -4,10 +4,10 @@ import Authenticate from "../utils/Authenticate"
 
 
 export default (app) => {
-  app.delete('/category/destroy/:id',Authenticate, adminValidator, categoriesController.delet)
+  app.delete('/category/destroy/:id',categoriesController.delet)
   app.get('/category', categoriesController.getAll)
   app.get('/category/get-all-categories', categoriesController.getAllCategories)
-  app.post('/category',Authenticate, adminValidator,categoriesController.persist)
+  app.post('/category',categoriesController.persist)
   app.get('/category/:id', categoriesController.getById)
-  app.patch('/category/:id',Authenticate, adminValidator, categoriesController.persist)
+  app.patch('/category/:id', categoriesController.persist)
 }
