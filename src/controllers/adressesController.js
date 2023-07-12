@@ -2,18 +2,14 @@ import Adresses from "../models/AdressesModel";
 import Jwt from "jsonwebtoken";
 import Util from "../utils/getUserByToken"
 
+
 const getAll = async (req, res) => {
   try {
-    let user = await Util.getUserByToken(req.headers.authorization)
-
     const response = await Adresses.findAll({
-      where: {
-        idUser: user.id
-      }
-    })
-
+      order: [['id', 'ASC']]
+    });
     return res.status(200).send({
-      type: 'success', // success, error, warning, info
+      type: 'sucess', // sucess, error, warning, info
       message: 'Registros recuperados com sucesso', // mensagem para o front exibir
       data: response // json com informações de resposta
     });
@@ -21,7 +17,7 @@ const getAll = async (req, res) => {
     return res.status(200).send({
       type: 'error',
       message: 'Ops! Ocorreu um erro!',
-      data: error.message 
+      data: error
     });
   }
 }

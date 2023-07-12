@@ -2,58 +2,58 @@ import Categories from "../models/CategoriesModel"
 import Products from "../models/ProductsModel"
 
 
+// const getAll = async (req, res) => {
+//   try {
+
+//     const response = await Categories.findAll({
+//       order: [['id', 'asc']]
+//     })
+//     let responseArray = []
+//     for(let category of response){
+//       let products = await Products.findAll({
+//         where: {
+//           idCategory: category.id
+//         }
+//       })
+//       category = category.toJSON()
+//       category.products = products
+//       if(products.length){
+//         responseArray.push(category)
+//       }
+//     }
+//     return res.status(200).send({
+//       type: 'success', // success, error, warning, info
+//       message: 'Registros recuperados com sucesso', // mensagem para o front exibir
+//       data: responseArray // json com informações de resposta
+//     });
+//   } catch (error) {
+//     return res.status(200).send({
+//       type: 'error',
+//       message: 'Ops! Ocorreu um erro!',
+//       data: error.message
+//     });
+//   }
+// }
+
 const getAll = async (req, res) => {
   try {
-
     const response = await Categories.findAll({
-      order: [['id', 'asc']]
-    })
-    let responseArray = []
-    for(let category of response){
-      let products = await Products.findAll({
-        where: {
-          idCategory: category.id
-        }
-      })
-      category = category.toJSON()
-      category.products = products
-      if(products.length){
-        responseArray.push(category)
-      }
-    }
-    console.log(responseArray);
+      order: [['id', 'ASC']]
+    });
     return res.status(200).send({
-      type: 'success', // success, error, warning, info
-      message: 'Registros recuperados com sucesso', // mensagem para o front exibir
-      data: responseArray // json com informações de resposta
+      type: 'success',
+      message: 'Registros recuperados com sucesso',
+      data: response
     });
   } catch (error) {
     return res.status(200).send({
       type: 'error',
       message: 'Ops! Ocorreu um erro!',
-      data: error.message
+      data: error
     });
   }
 }
-const getAllCategories = async (req, res) => {
-  try {
 
-    const response = await Categories.findAll({
-      order: [['id', 'asc']]
-    })
-    return res.status(200).send({
-      type: 'success', // success, error, warning, info
-      message: 'Registros recuperados com sucesso', // mensagem para o front exibir
-      data: response // json com informações de resposta
-    });
-  } catch (error) {
-    return res.status(200).send({
-      type: 'error',
-      message: 'Ops! Ocorreu um erro!',
-      data: error.message
-    });
-  }
-}
 
 const getById = async (req, res) => {
   try {
@@ -169,7 +169,7 @@ const update = async (id, datas, res) => {
 
 const delet = async (req, res) => {
   try {
-    let { id } = req.body
+    let { id } = req.params
     id = id.toString()
     id = id ? id.replace(/\D/g, '') : null
     if (!id) {
@@ -213,6 +213,4 @@ export default {
   persist,
   getById,
   delet,
-  getAllCategories
-
 }
