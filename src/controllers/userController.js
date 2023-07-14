@@ -25,9 +25,16 @@ const dualGet = async (req,res) =>{
 
 const getByToken = async (req, res) => {
   try{
-    let userForget = await getUserByToken.getUserByToken(req.headers.authorization)
-    let idUser = userForget.id 
-    return await getById(idUser, req, res)
+    const user = await getUserByToken.getUserByToken(req.headers.authorization)
+    
+    if(user) {
+      return res.status(200).send({
+        type: 'success',
+        message: 'Usuario encontrado',
+        data: user
+      });
+    }
+
   }catch(error){
     return res.status(200).send({
       type: 'error',
@@ -36,9 +43,6 @@ const getByToken = async (req, res) => {
     });
   }
 }
-
-
-
 
 const getAll = async (req, res) => {
   try {
@@ -234,7 +238,7 @@ const login = async (req, res) => {
     await user.save();
 
     return res.status(200).send({
-      type: 'sucess',
+      type: 'success',
       message: 'Bem-vindo! Login realizado com sucesso!',
       data: user,
       token
