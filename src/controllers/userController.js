@@ -116,7 +116,7 @@ const persist = async (req, res) => {
     let { id } = req.params;
     if (!id) {
       return await register(req.body, res)
-    }
+    }console.log(req.body);
     return await update(id, req.body, res)
 
   } catch (error) {
@@ -171,7 +171,7 @@ const register = async (data, res) => {
   }
 }
 
-const update = async (id, data, res) => {
+const update = async (id, datas, res) => {
   try {
     let response = await Users.findOne({
       where: {
@@ -186,15 +186,14 @@ const update = async (id, data, res) => {
       });
     }
     let usernameForget = false;
-    Object.keys(data).forEach(datas => {
-      response[datas] = data[datas]
-      if (datas == "username") {
+    Object.keys(datas).forEach(data => {
+      response[data] = datas[data];
+      if (data == "username") {
         usernameForget = true
       }
     })
     
-    // console.log(response);
-    await response.save()
+    await response.save();
 
     return res.status(200).send({
       type: 'sucess', // sucess, error, warning, info
